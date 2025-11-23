@@ -100,3 +100,4 @@ def delete_juguete(id):
         return jsonify({"error": "Juguete no encontrado"}), 404
     juguetes = [j for j in juguetes if j['id'] != id]
     return jsonify({"mensaje": f"Juguete con ID {id} eliminado"}), 200
+hola
