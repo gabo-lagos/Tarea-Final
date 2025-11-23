@@ -17,7 +17,7 @@ users = {
 def reports():
     return jsonify({"msg": "Datos de reporte confidenciales"}), 200
 
-
+users
 @users_bp.route("/migrar_usuarios", methods=["POST"])
 @role_required(["admin"])
 def migrar_usuarios():

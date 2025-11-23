@@ -32,7 +32,7 @@ El servidor se ejecutará en:
 
 ##  Endpoints
 
-### `POST /login`
+### `POST /auth/login`
 Obtiene un token JWT al iniciar sesión.
 
 **Cuerpo del JSON:**
@@ -97,7 +97,7 @@ Authorization: Bearer <tu_token>
 }
 ```
 
-### `DELETE /juguetes/<id>`
+### `DELETE /juguetes/id`
 Elimina un juguete (solo `gerente` o `admin` lo pueden hacer, un `cliente` no lo puede hacer).
 
 **Ejemplo:**
@@ -112,7 +112,7 @@ Authorization: Bearer <tu_token>
 
 ---
 
-###  `GET /reportes`
+###  `GET /reports/reportes`
 Acceso restringido a `gerente` o `admin`.
 
 **Headers:**
@@ -127,7 +127,7 @@ Authorization: Bearer <tu_token>
 }
 ```
 
-###  `POST /usuarios`
+###  `POST /users/usuarios`
 Crea un nuevo usuario (solo `admin` lo puede hacer).
 
 **Body JSON:**
@@ -165,7 +165,7 @@ Authorization: Bearer <token_admin>
 | 400    | Datos faltantes   | `Debe enviar username, password y rol`                    |
 | 409    | Usuario ya existe | `El usuario ya existe`                                    |
 
-### `POST /migrar_usuarios`
+### `POST /users/migrar_usuarios`
 
 Migra los usuarios a MongoDB (Solo `admin` lo puede hacer)
 
@@ -179,7 +179,7 @@ Authorization: Bearer <tu_token>
     "msg": "Se migraron 3 usuarios a MongoDB"
 }
 ```
-### `POST /migrar_juguetes`
+### `POST /juguetes/migrar_juguetes`
 
 Migra los usuarios a MongoDB (Solo `admin` lo puede hacer)
 

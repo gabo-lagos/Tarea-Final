@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
 from conection_with_mongo.conection_MongoDB import db, juguetes_col
+from route.auth_route import role_required
 
 juguetes_bp = Blueprint('juguetes_bp', __name__)
 
@@ -50,22 +51,10 @@ juguetes = [
 
 
 
-def role_required(allowed_roles):
-    def wrapper(fn):
-        @jwt_required()
-        def decorator(*args, **kwargs):
-            claims = get_jwt()
-            role = claims.get('role')
-            if role not in allowed_roles:
-                return jsonify({"msg": "El usuario no tiene el rol requerido"}), 403
-            return fn(*args, **kwargs)
-        decorator.__name__ = fn.__name__
-        return decorator
-    return wrapper
-
 
 @juguetes_bp.route('/', methods=['GET'])
 def get_all_juguetes():
+    
 
     categoria = request.args.get('categoria')
     marca = request.args.get('marca')
@@ -100,3 +89,25 @@ def delete_juguete(id):
         return jsonify({"error": "Juguete no encontrado"}), 404
     juguetes = [j for j in juguetes if j['id'] != id]
     return jsonify({"mensaje": f"Juguete con ID {id} eliminado"}), 200
+@juguetes_bp.route('/migrar_juguetes', methods=['POST'])
+
+def migrar_juguetes():
+    try:
+        if db is None or juguetes_col is None:
+            return jsonify({"msg": "MongoDB no está disponible"}), 503
+
+        existentes = [j["id"] for j in juguetes_col.find({}, {"id": 1, "_id": 0})]
+        nuevos = []
+
+        for juguete in juguetes:
+            if juguete["id"] not in existentes:
+                nuevos.append(juguete)
+
+        if not nuevos:
+            return jsonify({"msg": "No hay nuevos juguetes para migrar"}), 200
+
+        result = juguetes_col.insert_many(nuevos)
+        return jsonify({"msg": f"Se migraron {len(result.inserted_ids)} juguetes a MongoDB"}), 201
+
+    except Exception as e:
+        return jsonify({"msg": "Error al migrar juguetes", "error": str(e)}), 500

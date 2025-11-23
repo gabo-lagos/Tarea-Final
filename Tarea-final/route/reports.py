@@ -17,7 +17,7 @@ def role_required(roles):
     return wrapper
 
 
-@reports_bp.route("/", methods=["GET"])
+@reports_bp.route("/reportes", methods=["GET"])
 @role_required(["manager", "admin"])
 def reports():
     return jsonify({"msg": "Datos de reporte confidenciales"}), 200
